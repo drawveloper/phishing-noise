@@ -3,14 +3,13 @@ import http from 'http'
 import {resolve, join} from 'path'
 import {parse} from 'url'
 import {stringify} from 'querystring'
+
 const url = process.env.NOISE_TARGET_URL
 const origin = process.env.NOISE_ORIGIN
 const referer = process.env.NOISE_REFERER
 const {host, path, protocol} = parse(url)
 const maxAmount = process.env.NOISE_MAX_AMOUNT || 10
 const maxTimeframe = process.env.NOISE_MAX_TIMEFRAME || 300
-
-const identity = a => a
 
 const NAMES = resolve(__dirname, '../data/names.ascii.txt')
 const SURNAMES = resolve(__dirname, '../data/surnames.ascii.txt')
@@ -20,6 +19,7 @@ const PASSWORDS = resolve(__dirname, '../data/passwords.ascii.txt')
 const CREDENTIALS_LOG = join(process.cwd(), 'credentials.log')
 const RESPONSES_LOG = join(process.cwd(), 'responses.log')
 
+const identity = a => a
 const fileLines = {}
 const pickRandomLine = (file) => {
   if (!fileLines[file]) {
