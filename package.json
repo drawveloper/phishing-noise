@@ -1,0 +1,23 @@
+{
+  "name": "phishing-noise",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/firstdoit/phishing-noise.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/firstdoit/phishing-noise/issues"
+  },
+  "homepage": "https://github.com/firstdoit/phishing-noise#readme",
+  "description": "",
+  "scripts": {
+    "prepublish": "babel src -d lib -s",
+    "watch": "babel src -d lib --watch"
+  }
+}

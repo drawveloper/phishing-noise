@@ -1,0 +1,5 @@
+node_modules
+run.sh
+npm-debug.log
+credentials.log
+responses.log
