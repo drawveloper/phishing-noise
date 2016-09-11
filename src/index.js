@@ -8,8 +8,8 @@ const url = process.env.NOISE_TARGET_URL
 const origin = process.env.NOISE_ORIGIN
 const referer = process.env.NOISE_REFERER
 const {host, path, protocol} = parse(url)
-const maxAmount = process.env.NOISE_MAX_AMOUNT || 10
-const maxTimeframe = process.env.NOISE_MAX_TIMEFRAME || 300
+const maxAmount = process.env.NOISE_MAX_AMOUNT || 30
+const maxTimeframe = process.env.NOISE_MAX_TIMEFRAME || 600
 
 const NAMES = resolve(__dirname, '../data/names.ascii.txt')
 const SURNAMES = resolve(__dirname, '../data/surnames.ascii.txt')
@@ -30,11 +30,12 @@ const pickRandomLine = (file) => {
 }
 
 const generateCredentials = () => {
-  const name = pickRandomLine(NAMES).toLowerCase()
-  const surname = Math.random() < 0.66 ? '.' + pickRandomLine(SURNAMES).toLowerCase() : ''
+  const name = pickRandomLine(NAMES).toLowerCase().replace(/\s/, '.')
+  const surname = Math.random() < 0.8 ? pickRandomLine(SURNAMES).toLowerCase().replace(/\s/, '.') : null
+  const user = surname ? (Math.random() < 0.6 ? name + '.' + surname : name[0] + surname) : name
   const domain = pickRandomLine(DOMAINS)
   const password = pickRandomLine(PASSWORDS)
-  const email = name + surname + '%40' + domain
+  const email = user + '%40' + domain
   return {email, password}
 }
 
@@ -64,10 +65,11 @@ const send = () => {
   };
   const req = http.request(options, (res) => {
     const {date, server} = res.headers
-    console.log('req:', data)
+    const credentials = email.replace('%40', '@') + ',' + password
+    console.log('req:', credentials)
     console.log('res:', res.statusCode, stringify({date, server}, ', ', null, { encodeURIComponent: identity }))
     appendFileSync(RESPONSES_LOG, res.statusCode + ',' + stringify(res.headers) + '\n')
-    appendFileSync(CREDENTIALS_LOG, email.replace('%40', '@') + ',' + password + '\n')
+    appendFileSync(CREDENTIALS_LOG, credentials + '\n')
     res.resume()
   })
   req.write(data)
