@@ -41,6 +41,7 @@ const generateCredentials = () => {
 
 const send = () => {
   const {email, password} = generateCredentials()
+  const credentials = email.replace('%40', '@') + ',' + password
   const ua = pickRandomLine(USER_AGENTS)
   const data = 'Email=' + email + '&Senha=' + password
   const headers = {
@@ -63,14 +64,17 @@ const send = () => {
     method: 'POST',
     headers
   };
-  const req = http.request(options, (res) => {
+  const req = http.request(options)
+  req.on('response', (res) => {
     const {date, server} = res.headers
-    const credentials = email.replace('%40', '@') + ',' + password
     console.log('req:', credentials)
     console.log('res:', res.statusCode, stringify({date, server}, ', ', null, { encodeURIComponent: identity }))
     appendFileSync(RESPONSES_LOG, res.statusCode + ',' + stringify(res.headers) + '\n')
     appendFileSync(CREDENTIALS_LOG, credentials + '\n')
     res.resume()
+  })
+  req.on('error', (err) => {
+    console.log('Failed to send credentials (' + credentials + '), skipping.')
   })
   req.write(data)
   req.end()
