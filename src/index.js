@@ -8,7 +8,7 @@ const url = process.env.NOISE_TARGET_URL
 const origin = process.env.NOISE_ORIGIN
 const referer = process.env.NOISE_REFERER
 const {host, path, protocol} = parse(url)
-const maxAmount = process.env.NOISE_MAX_AMOUNT || 30
+const maxAmount = process.env.NOISE_MAX_AMOUNT || 60
 const maxTimeframe = process.env.NOISE_MAX_TIMEFRAME || 600
 
 const NAMES = resolve(__dirname, '../data/names.ascii.txt')
@@ -70,7 +70,7 @@ const send = () => {
     console.log('req:', credentials)
     console.log('res:', res.statusCode, stringify({date, server}, ', ', null, { encodeURIComponent: identity }))
     appendFileSync(RESPONSES_LOG, res.statusCode + ',' + stringify(res.headers) + '\n')
-    appendFileSync(CREDENTIALS_LOG, credentials + '\n')
+    appendFileSync(CREDENTIALS_LOG, credentials + ',' + res.statusCode + '\n')
     res.resume()
   })
   req.on('error', (err) => {
